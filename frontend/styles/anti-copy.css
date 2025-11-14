@@ -1,0 +1,35 @@
+/* 🔥 BLOQUEIA SELEÇÃO DE TEXTO EM TODO O SITE */
+body {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* PERMITE SELEÇÃO APENAS EM CAMPOS DE FORMULÁRIO */
+input, textarea {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
+
+/* 🔥 BLOQUEIA DRAG DE IMAGENS */
+img {
+  -webkit-user-drag: none;
+  -moz-user-drag: none;
+  -ms-user-drag: none;
+  user-drag: none;
+  pointer-events: none;
+}
+
+/* 🔥 OFUSCA TEXTO QUANDO SELECIONADO (efeito extra) */
+::selection {
+  background: transparent;
+  color: inherit;
+}
+
+::-moz-selection {
+  background: transparent;
+  color: inherit;
+}

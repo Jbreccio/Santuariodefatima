@@ -1,0 +1,182 @@
+# ==============================================
+# 1. SECRETS (snsf-secrets.yaml)
+# ==============================================
+apiVersion: v1
+kind: Secret
+metadata:
+  name: snsf-secrets
+type: Opaque
+data:
+  # Para gerar: echo -n 'seu_valor' | base64
+  db-name: c2Fuc2ZfZGI=           # snsf_db
+  db-user: c25zZl91c2Vy           # snsf_user
+  db-password: U3VhU2VuaGFTZWd1cmExMjMh  # SuaSenhaSegura123!
+
+---
+# ==============================================
+# 2. PERSISTENT VOLUME CLAIM (postgres-pvc.yaml)
+# ==============================================
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  # Remova ou ajuste storageClassName conforme seu cluster
+  # storageClassName: standard
+
+---
+# ==============================================
+# 3. SERVICE (postgres-service.yaml)
+# ==============================================
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-service
+spec:
+  selector:
+    app: postgres
+  type: ClusterIP
+  ports:
+  - name: postgres
+    port: 5432
+    targetPort: 5432
+    protocol: TCP
+
+---
+# ==============================================
+# 4. DEPLOYMENT MELHORADO (postgres-deployment.yaml)
+# ==============================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+  labels:
+    app: postgres
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate  # Importante para evitar conflitos com PVC
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:15
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 5432
+          name: postgres
+        env:
+        - name: POSTGRES_DB
+          valueFrom:
+            secretKeyRef:
+              name: snsf-secrets
+              key: db-name
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: snsf-secrets
+              key: db-user
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: snsf-secrets
+              key: db-password
+        - name: PGDATA
+          value: /var/lib/postgresql/data/pgdata
+        volumeMounts:
+        - name: postgres-storage
+          mountPath: /var/lib/postgresql/data
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+        livenessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - pg_isready -U $POSTGRES_USER -d $POSTGRES_DB
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - pg_isready -U $POSTGRES_USER -d $POSTGRES_DB
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+      volumes:
+      - name: postgres-storage
+        persistentVolumeClaim:
+          claimName: postgres-pvc
+
+---
+# ==============================================
+# 5. CONFIGMAP OPCIONAL (postgres-init.yaml)
+# Para scripts de inicialização
+# ==============================================
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-init-scripts
+data:
+  init.sql: |
+    -- Script de inicialização do banco
+    CREATE TABLE IF NOT EXISTS pastorais (
+      id SERIAL PRIMARY KEY,
+      nome VARCHAR(100) NOT NULL,
+      descricao TEXT,
+      responsavel VARCHAR(100),
+      email VARCHAR(100),
+      telefone VARCHAR(20),
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE TABLE IF NOT EXISTS eventos (
+      id SERIAL PRIMARY KEY,
+      titulo VARCHAR(200) NOT NULL,
+      descricao TEXT,
+      data_evento TIMESTAMP NOT NULL,
+      local VARCHAR(200),
+      imagem_url VARCHAR(500),
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE TABLE IF NOT EXISTS noticias (
+      id SERIAL PRIMARY KEY,
+      titulo VARCHAR(200) NOT NULL,
+      conteudo TEXT,
+      imagem_url VARCHAR(500),
+      publicado BOOLEAN DEFAULT FALSE,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+
+    -- Inserir dados iniciais
+    INSERT INTO pastorais (nome, descricao) VALUES
+    ('Pastoral do Batismo', 'Preparação para o sacramento do batismo'),
+    ('Pastoral dos Noivos', 'Preparação matrimonial'),
+    ('Pastoral da Juventude', 'Evangelização dos jovens'),
+    ('Pastoral do Dízimo', 'Administração e educação sobre o dízimo'),
+    ('Pastoral da Comunicação - PASCOM', 'Comunicação e divulgação');
+
+    GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO $POSTGRES_USER;
+    GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO $POSTGRES_USER;

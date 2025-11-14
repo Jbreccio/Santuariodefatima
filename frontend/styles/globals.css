@@ -1,0 +1,406 @@
+/* styles/globals.css - SANTUÁRIO NOSSA SENHORA DE FÁTIMA */
+
+/* ===== RESET E BASE ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ===== VARIÁVEIS CSS - TEMA SANTUÁRIO ===== */
+:root {
+  /* Cores Principais - Azul (Nossa Senhora) */
+  --azul-maria: #1e3a8a;
+  --azul-escuro: #1e40af;
+  --azul-claro: #3b82f6;
+  --azul-bg: #eff6ff;
+  
+  /* Cores Secundárias */
+  --dourado: #d4af37;
+  --dourado-claro: #f5e8c8;
+  --branco-puro: #ffffff;
+  --creme: #faf8f3;
+  
+  /* Cores de Destaque */
+  --vermelho-liturgico: #dc2626;
+  --roxo-liturgico: #7c3aed;
+  --verde-liturgico: #16a34a;
+  
+  /* Cores Neutras */
+  --cinza-escuro: #1f2937;
+  --cinza-medio: #6b7280;
+  --cinza-claro: #f3f4f6;
+  --cinza-borda: #e5e7eb;
+  
+  /* Cores de Estado */
+  --sucesso: #10b981;
+  --alerta: #f59e0b;
+  --erro: #ef4444;
+  --info: #3b82f6;
+  
+  /* Gradientes */
+  --gradiente-azul: linear-gradient(135deg, var(--azul-maria), var(--azul-claro));
+  --gradiente-dourado: linear-gradient(135deg, var(--dourado), #f5e8c8);
+  --gradiente-ceu: linear-gradient(180deg, #dbeafe 0%, #fff 100%);
+  
+  /* Sombras */
+  --sombra-suave: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.08);
+  --sombra-media: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+  --sombra-forte: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
+  --sombra-destaque: 0 0 20px rgba(30, 58, 138, 0.3);
+  
+  /* Bordas */
+  --borda-radius: 8px;
+  --borda-radius-grande: 16px;
+  --borda-radius-circular: 50%;
+  
+  /* Transições */
+  --transicao-rapida: 0.15s ease;
+  --transicao-normal: 0.3s ease;
+  --transicao-lenta: 0.5s ease;
+  
+  /* Tipografia */
+  --fonte-principal: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --fonte-secundaria: Georgia, 'Times New Roman', serif;
+  --fonte-titulo: 'Inter', var(--fonte-principal);
+  
+  /* Espaçamentos */
+  --espacamento-xs: 0.25rem;
+  --espacamento-sm: 0.5rem;
+  --espacamento-md: 1rem;
+  --espacamento-lg: 1.5rem;
+  --espacamento-xl: 2rem;
+  --espacamento-xxl: 3rem;
+}
+
+/* ===== ELEMENTOS BASE ===== */
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--fonte-principal);
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--cinza-escuro);
+  background: var(--gradiente-ceu);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ===== TIPOGRAFIA ===== */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--fonte-titulo);
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: var(--espacamento-md);
+  color: var(--azul-maria);
+}
+
+h1 {
+  font-size: clamp(2rem, 5vw, 3rem);
+  background: var(--gradiente-azul);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+h2 {
+  font-size: clamp(1.5rem, 4vw, 2.25rem);
+}
+
+h3 {
+  font-size: clamp(1.25rem, 3vw, 1.75rem);
+}
+
+p {
+  margin-bottom: var(--espacamento-md);
+  line-height: 1.7;
+  color: var(--cinza-medio);
+}
+
+a {
+  color: var(--azul-maria);
+  text-decoration: none;
+  transition: all var(--transicao-normal);
+  position: relative;
+}
+
+a:hover {
+  color: var(--azul-claro);
+}
+
+a::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--azul-claro);
+  transition: width var(--transicao-normal);
+}
+
+a:hover::after {
+  width: 100%;
+}
+
+/* ===== PROTEÇÃO DE CONTEÚDO ===== */
+body {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Permite seleção em campos editáveis */
+input,
+textarea,
+[contenteditable="true"],
+.selectable {
+  -webkit-user-select: text !important;
+  -moz-user-select: text !important;
+  -ms-user-select: text !important;
+  user-select: text !important;
+}
+
+/* Desabilita menu de contexto (botão direito) */
+body {
+  -webkit-touch-callout: none;
+}
+
+/* ===== FORMULÁRIOS ===== */
+input,
+textarea,
+select {
+  font-family: var(--fonte-principal);
+  font-size: 1rem;
+  padding: var(--espacamento-sm) var(--espacamento-md);
+  border: 2px solid var(--cinza-borda);
+  border-radius: var(--borda-radius);
+  background: var(--branco-puro);
+  transition: all var(--transicao-normal);
+  width: 100%;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: var(--azul-maria);
+  box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--cinza-medio);
+  opacity: 0.6;
+}
+
+/* ===== BOTÕES ===== */
+button {
+  font-family: var(--fonte-principal);
+  font-size: 1rem;
+  font-weight: 600;
+  padding: var(--espacamento-sm) var(--espacamento-lg);
+  border: none;
+  border-radius: var(--borda-radius);
+  cursor: pointer;
+  transition: all var(--transicao-normal);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--espacamento-sm);
+  position: relative;
+  overflow: hidden;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-primario {
+  background: var(--gradiente-azul);
+  color: var(--branco-puro);
+  box-shadow: var(--sombra-suave);
+}
+
+.btn-primario:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: var(--sombra-media);
+}
+
+.btn-secundario {
+  background: transparent;
+  color: var(--azul-maria);
+  border: 2px solid var(--azul-maria);
+}
+
+.btn-secundario:hover:not(:disabled) {
+  background: var(--azul-maria);
+  color: var(--branco-puro);
+}
+
+.btn-dourado {
+  background: var(--gradiente-dourado);
+  color: var(--cinza-escuro);
+  font-weight: 700;
+}
+
+/* ===== CARDS ===== */
+.card {
+  background: var(--branco-puro);
+  border-radius: var(--borda-radius-grande);
+  padding: var(--espacamento-lg);
+  box-shadow: var(--sombra-suave);
+  border: 1px solid var(--cinza-borda);
+  transition: all var(--transicao-normal);
+  position: relative;
+  overflow: hidden;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--sombra-forte);
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: var(--gradiente-azul);
+  transform: scaleX(0);
+  transition: transform var(--transicao-normal);
+}
+
+.card:hover::before {
+  transform: scaleX(1);
+}
+
+/* ===== GRID SYSTEM ===== */
+.grid {
+  display: grid;
+  gap: var(--espacamento-lg);
+}
+
+.grid-2 {
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.grid-3 {
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+/* ===== ANIMAÇÕES ===== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.6s ease-out;
+}
+
+.slide-left {
+  animation: slideInLeft 0.6s ease-out;
+}
+
+/* ===== UTILITÁRIOS ===== */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--espacamento-md);
+}
+
+.text-center {
+  text-align: center;
+}
+
+.mt-4 { margin-top: var(--espacamento-lg); }
+.mb-4 { margin-bottom: var(--espacamento-lg); }
+.p-4 { padding: var(--espacamento-lg); }
+
+/* ===== RESPONSIVIDADE ===== */
+@media (max-width: 768px) {
+  html {
+    font-size: 14px;
+  }
+  
+  .grid-2,
+  .grid-3 {
+    grid-template-columns: 1fr;
+  }
+  
+  button {
+    width: 100%;
+  }
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--cinza-claro);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--azul-maria);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--azul-escuro);
+}
+
+/* ===== SELEÇÃO ===== */
+::selection {
+  background: rgba(30, 58, 138, 0.2);
+  color: var(--azul-maria);
+}
+
+/* ===== ACESSIBILIDADE ===== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
